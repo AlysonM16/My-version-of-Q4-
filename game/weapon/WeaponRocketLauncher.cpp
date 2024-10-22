@@ -441,14 +441,34 @@ rvWeaponRocketLauncher::State_Fire
 stateResult_t rvWeaponRocketLauncher::State_Fire ( const stateParms_t& parms ) {
 	enum {
 		STAGE_INIT,
+		STAGE_ATTACKLOOP,
 		STAGE_WAIT,
 	};	
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));		
 			Attack ( false, 1, spread, 0, 1.0f );
-			PlayAnim ( ANIMCHANNEL_LEGS, "fire", parms.blendFrames );	
-			return SRESULT_STAGE ( STAGE_WAIT );
+			//StartSound("snd_fire", SND_CHANNEL_WEAPON, 0, false, NULL);//new
+			//StartSound("snd_fire_stereo", SND_CHANNEL_ITEM, 0, false, NULL);//new
+			//StartSound("snd_fire_loop", SND_CHANNEL_BODY2, 0, false, NULL);//new
+			//viewModel->PlayEffect("fx_flash", barrelJointView, true);// new
+			PlayAnim ( ANIMCHANNEL_LEGS, "fire", parms.blendFrames );	//commented out
+			//StartSound("snd_fire", SND_CHANNEL_WEAPON, 0, false, NULL);//new
+			//StartSound("snd_fire_stereo", SND_CHANNEL_ITEM, 0, false, NULL);//new
+			//StartSound("snd_fire_loop", SND_CHANNEL_BODY2, 0, false, NULL);//new
+			return SRESULT_STAGE ( STAGE_WAIT ); //Changed to attack_loop in past
+		//case STAGE_ATTACKLOOP:
+			//if (!wsfl.attack || wsfl.lowerWeapon || !AmmoAvailable()) {
+				//return SRESULT_STAGE(STAGE_WAIT);
+			//}
+			//if (AnimDone(ANIMCHANNEL_LEGS, 0)) {
+				//PlayCycle(ANIMCHANNEL_LEGS, "shoot_loop", 0);
+				//if (!gameLocal.isMultiplayer
+					//&& owner == gameLocal.GetLocalPlayer()) {
+					//owner->playerView.SetShakeParms(MS2SEC(gameLocal.GetTime() + 500), 2.0f);
+			//	}
+			//}
+			//return SRESULT_WAIT;
 	
 		case STAGE_WAIT:			
 			if ( wsfl.attack && gameLocal.time >= nextAttackTime && ( gameLocal.isClient || AmmoInClip ( ) ) && !wsfl.lowerWeapon ) {
