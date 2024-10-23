@@ -4154,6 +4154,7 @@ bool idPlayer::Give( const char *statname, const char *value, bool dropped ) {
  		return inventory.Give( this, spawnArgs, statname, value, &idealWeapon, true, dropped );
 	}
 	return true;
+	
 }
 
 /*

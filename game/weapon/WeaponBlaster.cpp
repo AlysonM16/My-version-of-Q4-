@@ -3,7 +3,7 @@
 
 #include "../Game_local.h"
 #include "../Weapon.h"
-
+#include "../ai/AAS_local.h"
 #define BLASTER_SPARM_CHARGEGLOW		6
 
 class rvWeaponBlaster : public rvWeapon {
@@ -397,19 +397,34 @@ stateResult_t rvWeaponBlaster::State_Charged ( const stateParms_t& parms ) {
 rvWeaponBlaster::State_Fire
 ================
 */
+idDict		dict;
 stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 	enum {
 		FIRE_INIT,
 		FIRE_WAIT,
 	};	
 	switch ( parms.stage ) {
-		case FIRE_INIT:	
-
+		case FIRE_INIT:
+			idPlayer* player;
+			/*const char* key, * value;
+			int			i;
+			float		yaw;
+			idEntity* newEnt = NULL;
+			idPlayer* player;
+			//idDict dict;
+			yaw = player->viewAngles.yaw;
+			value = "monster_gunner";
+			dict.Set("classname", value);
+			dict.Set("angle", va("%f", yaw + 180));
+			printf("%f", va("%f", yaw + 180));
+			dict.Set("origin", 0);
+			dict.Set("", "1");
+			gameLocal.SpawnEntityDef(dict, &newEnt);
+			*/
 			StopSound ( SND_CHANNEL_ITEM, false );
 			viewModel->SetShaderParm ( BLASTER_SPARM_CHARGEGLOW, 0 );
-			//don't fire if we're targeting a gui.
-			idPlayer* player;
 			player = gameLocal.GetLocalPlayer();
+			
 
 			//make sure the player isn't looking at a gui first
 			if( player && player->GuiActive() )	{
