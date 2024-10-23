@@ -5172,7 +5172,7 @@ void idPlayer::UpdateObjectiveInfo( void ) {
 	if ( objectiveSystem == NULL ) {
 		return;
 	}
-	objectiveSystem->SetStateString( "objective1", "" );
+	objectiveSystem->SetStateString( "teehee", "" );//EDITobjective1
 	objectiveSystem->SetStateString( "objective2", "" );
 	objectiveSystem->SetStateString( "objective3", "" );
 

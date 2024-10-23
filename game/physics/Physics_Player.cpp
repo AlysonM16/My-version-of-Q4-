@@ -1459,8 +1459,8 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	framemsec = msec;
 	frametime = framemsec * 0.001f;
 
-	// default speed
-	playerSpeed = walkSpeed;
+	// default speed EDIT
+	playerSpeed = crouchSpeed;
 
 	// remove jumped and stepped up flag
 	current.movementFlags &= ~(PMF_JUMPED|PMF_STEPPED_UP|PMF_STEPPED_DOWN);
