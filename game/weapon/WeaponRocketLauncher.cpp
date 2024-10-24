@@ -19,7 +19,7 @@ public:
 
 	virtual void			Spawn				( void );
 	virtual void			Think				( void );
-
+	void					Cmd_Spawn_f			( void );
 	void					Save( idSaveGame *saveFile ) const;
 	void					Restore( idRestoreGame *saveFile );
 	void					PreSave				( void );
@@ -204,6 +204,36 @@ void rvWeaponRocketLauncher::Think ( void ) {
 		guideEffect->SetAxis ( tr.c.normal.ToMat3() );
 	}
 }
+
+void rvWeaponRocketLauncher::Cmd_Spawn_f(void){
+#ifndef _MPBETA
+		const char* key, * value;
+		int			i;
+		float		yaw;
+		idVec3		org;
+		idPlayer* player;
+		idDict		dict;
+		int spawnWaves = spawnArgs.GetInt("waves", "5");
+
+		player = gameLocal.GetLocalPlayer();
+		if (!player || !gameLocal.CheatsOk(false)) {
+			return;
+		}
+		yaw = player->viewAngles.yaw;
+		value = "monster_grunt";
+		dict.Set("classname", value);
+		dict.Set("angle", va("%f", yaw + 180));
+		org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+		dict.Set("origin", org.ToString());
+		idEntity* newEnt = NULL;
+		gameLocal.SpawnEntityDef(dict, &newEnt);
+
+		if (newEnt) {
+			gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+		}
+		// RAVEN END
+#endif // !_MPBETA
+	}
 
 /*
 ================

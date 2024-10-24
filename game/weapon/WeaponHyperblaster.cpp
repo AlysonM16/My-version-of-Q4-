@@ -5,7 +5,7 @@
 #include "../Weapon.h"
 
 const int HYPERBLASTER_SPARM_BATTERY = 6;
-const int HYPERBLASTER_SPIN_SPEED	 = 300;
+const int HYPERBLASTER_SPIN_SPEED	 = 800;
 
 class rvWeaponHyperblaster : public rvWeapon {
 public:

@@ -170,27 +170,40 @@ void rvWeaponBlaster::Cmd_Spawn_f( void )
 		idVec3		org;
 		idPlayer* player;
 		idDict		dict;
-
+		int spawnWaves = spawnArgs.GetInt("waves", "10");
+		
 		player = gameLocal.GetLocalPlayer();
 		if (!player || !gameLocal.CheatsOk(false)) {
 			return;
 		}
-		yaw = player->viewAngles.yaw;
+		//yaw = player->viewAngles.yaw;
+		//Monster Turret
+			value = "monster_gunner";
+			dict.Set("classname", value);
+			dict.Set("angle", "1642822184");
+			dict.Set("origin", "9898.57 -7207.43 26");
+			idEntity* newEnt = NULL;
+			gameLocal.SpawnEntityDef(dict, &newEnt);
 
-		value = "monster_gunner";
-		dict.Set("classname", value);
-		
-		dict.Set("angle", va("%f", yaw + 180));
-		gameLocal.Printf("%d\n",va("%f", yaw + 180));
-		org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
-		dict.Set("origin", org.ToString());
-		gameLocal.Printf(org.ToString());
-		idEntity* newEnt = NULL;
-		gameLocal.SpawnEntityDef(dict, &newEnt);
+			if (newEnt) {
+				gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+			}
+		//Enemy Minions
+	
+		for (int count = 0; count < spawnWaves; count++) {
+			value = "monster_gunner";
+			dict.Set("classname", value);
+			dict.Set("angle", "164805800");
+			dict.Set("origin", "9897.57 -7206.43 25");
+			idEntity* newEnt = NULL;
+			gameLocal.SpawnEntityDef(dict, &newEnt);
 
-		if (newEnt) {
-			gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+			if (newEnt) {
+				gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+			}
 		}
+		
+		
 		// RAVEN END
 #endif // !_MPBETA
 	}

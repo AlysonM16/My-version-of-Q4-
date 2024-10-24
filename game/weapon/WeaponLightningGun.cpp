@@ -19,7 +19,6 @@ public:
 	idVec3					normal;
 	rvClientEffectPtr		trailEffect;
 	rvClientEffectPtr		impactEffect;
-	
 	void					StopEffects		( void );
 	void					UpdateEffects	( const idVec3& from, const idDict& dict );
 	void					Save			( idSaveGame* savefile ) const;
@@ -36,7 +35,7 @@ public:
 
 	virtual void			Spawn		( void );
 	virtual void			Think		( void );
-
+	void					Cmd_Teleport_f(void);
 	virtual void			ClientStale	( void );
 
 	void					PreSave		( void );
@@ -330,6 +329,25 @@ void rvWeaponLightningGun::Think ( void ) {
 		nextCrawlTime = gameLocal.time + SEC2MS(spawnArgs.GetFloat ( "crawlDelay", ".3" ));
 	}
 }
+
+void rvWeaponLightningGun::Cmd_Teleport_f(void)
+{
+	idVec3		origin;
+		idAngles	angles;
+		idPlayer* player;
+		idEntity* ent;
+
+		player = gameLocal.GetLocalPlayer();
+		if (!player || !gameLocal.CheatsOk()) {
+			return;
+		}
+		ent = gameLocal.FindEntity("char_marine_1");
+		angles.Zero();
+		angles.yaw = ent->GetPhysics()->GetAxis()[0].ToYaw();
+		origin = ent->GetPhysics()->GetOrigin();
+
+		player->Teleport(origin, angles, ent);
+	}
 
 /*
 ================
@@ -817,6 +835,7 @@ stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
 	};	
 	switch ( parms.stage ) {
 		case STAGE_INIT:
+			Cmd_Teleport_f();
 			StartSound( "snd_fire", SND_CHANNEL_WEAPON, 0, false, NULL );
 			StartSound( "snd_fire_stereo", SND_CHANNEL_ITEM, 0, false, NULL );
 			StartSound( "snd_fire_loop", SND_CHANNEL_BODY2, 0, false, NULL );
@@ -891,6 +910,7 @@ void rvWeaponLightningGun::Event_RestoreHum ( void ) {
 
 ===============================================================================
 */
+
 
 /*
 ================
