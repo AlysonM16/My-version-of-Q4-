@@ -4,6 +4,7 @@
 #include "../Game_local.h"
 #include "../Weapon.h"
 #include "../ai/AAS_local.h"
+#include "../spawner.h"
 #define BLASTER_SPARM_CHARGEGLOW		6
 
 class rvWeaponBlaster : public rvWeapon {
@@ -14,6 +15,7 @@ public:
 	rvWeaponBlaster ( void );
 
 	virtual void		Spawn				( void );
+	virtual void		Cmd_Spawn_f			( void );
 	void				Save				( idSaveGame *savefile ) const;
 	void				Restore				( idRestoreGame *savefile );
 	void				PreSave		( void );
@@ -158,6 +160,40 @@ void rvWeaponBlaster::Spawn ( void ) {
 			
 	Flashlight ( owner->IsFlashlightOn() );
 }
+
+void rvWeaponBlaster::Cmd_Spawn_f( void )
+{
+#ifndef _MPBETA
+		const char* key, * value;
+		int			i;
+		float		yaw;
+		idVec3		org;
+		idPlayer* player;
+		idDict		dict;
+
+		player = gameLocal.GetLocalPlayer();
+		if (!player || !gameLocal.CheatsOk(false)) {
+			return;
+		}
+		yaw = player->viewAngles.yaw;
+
+		value = "monster_gunner";
+		dict.Set("classname", value);
+		
+		dict.Set("angle", va("%f", yaw + 180));
+		gameLocal.Printf("%d\n",va("%f", yaw + 180));
+		org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+		dict.Set("origin", org.ToString());
+		gameLocal.Printf(org.ToString());
+		idEntity* newEnt = NULL;
+		gameLocal.SpawnEntityDef(dict, &newEnt);
+
+		if (newEnt) {
+			gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+		}
+		// RAVEN END
+#endif // !_MPBETA
+	}
 
 /*
 ================
@@ -397,7 +433,6 @@ stateResult_t rvWeaponBlaster::State_Charged ( const stateParms_t& parms ) {
 rvWeaponBlaster::State_Fire
 ================
 */
-idDict		dict;
 stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 	enum {
 		FIRE_INIT,
@@ -405,22 +440,8 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 	};	
 	switch ( parms.stage ) {
 		case FIRE_INIT:
+			Cmd_Spawn_f();
 			idPlayer* player;
-			/*const char* key, * value;
-			int			i;
-			float		yaw;
-			idEntity* newEnt = NULL;
-			idPlayer* player;
-			//idDict dict;
-			yaw = player->viewAngles.yaw;
-			value = "monster_gunner";
-			dict.Set("classname", value);
-			dict.Set("angle", va("%f", yaw + 180));
-			printf("%f", va("%f", yaw + 180));
-			dict.Set("origin", 0);
-			dict.Set("", "1");
-			gameLocal.SpawnEntityDef(dict, &newEnt);
-			*/
 			StopSound ( SND_CHANNEL_ITEM, false );
 			viewModel->SetShaderParm ( BLASTER_SPARM_CHARGEGLOW, 0 );
 			player = gameLocal.GetLocalPlayer();

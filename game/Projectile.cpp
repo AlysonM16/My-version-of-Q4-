@@ -101,7 +101,6 @@ void idProjectile::Spawn( void ) {
  	SetPhysics( &physicsObj );
 	prePredictTime = spawnArgs.GetInt( "predictTime", "0" );
 	syncPhysics = spawnArgs.GetBool( "net_syncPhysics", "0" );
-
 	if ( gameLocal.isClient ) {
 		Hide();
 	}
@@ -484,6 +483,7 @@ void idProjectile::Launch( const idVec3 &start, const idVec3 &dir, const idVec3 
 		f *= 0.5f;
 		renderEntity.shaderParms[SHADERPARM_DIVERSITY] = f;
 	}
+	
 
  	UpdateVisuals();
 
