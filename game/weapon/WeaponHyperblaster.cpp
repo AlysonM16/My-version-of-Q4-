@@ -19,6 +19,7 @@ public:
 	void					Restore				( idRestoreGame *savefile );
 	void					PreSave				( void );
 	void					PostSave			( void );
+	void					Cmd_Undying_f		( void );
 
 protected:
 
@@ -103,6 +104,20 @@ rvWeaponHyperBlaster::PostSave
 */
 void rvWeaponHyperblaster::PostSave ( void ) {
 }
+
+void rvWeaponHyperblaster::Cmd_Undying_f(void){
+
+		char* msg;
+		idPlayer* player;
+
+		player = gameLocal.GetLocalPlayer();
+		if (!player || !gameLocal.CheatsOk()) {
+			return;
+		}
+			player->undying = true;
+			msg = "undying ON\n";
+		gameLocal.Printf("%s", msg);
+	}
 
 /*
 ================
@@ -217,7 +232,7 @@ stateResult_t rvWeaponHyperblaster::State_Idle( const stateParms_t& parms ) {
 
 /*
 ================
-rvWeaponHyperblaster::State_Fire
+rvWeaponHyperblaster::State_Fire// Find way to increase stats
 ================
 */
 stateResult_t rvWeaponHyperblaster::State_Fire ( const stateParms_t& parms ) {
@@ -228,6 +243,9 @@ stateResult_t rvWeaponHyperblaster::State_Fire ( const stateParms_t& parms ) {
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			SpinUp ( );
+			if (!AmmoInClip()) {
+				Cmd_Undying_f();
+			}
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
 			Attack ( false, 1, spread, 0, 1.0f );
 			if ( ClipSize() ) {

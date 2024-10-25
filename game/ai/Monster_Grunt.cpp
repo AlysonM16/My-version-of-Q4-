@@ -14,6 +14,7 @@ public:
 	void				Spawn					( void );
 	void				Save					( idSaveGame *savefile ) const;
 	void				Restore					( idRestoreGame *savefile );
+	void				ForceTeamChange_f		( void );
 	
 	virtual void		AdjustHealthByDamage	( int damage );
 
@@ -99,7 +100,6 @@ void rvMonsterGrunt::Restore ( idRestoreGame *savefile ) {
 	savefile->ReadInt( rageThreshold );
 	savefile->ReadInt( standingMeleeNoAttackTime );
 }
-
 /*
 ================
 rvMonsterGrunt::RageStart
@@ -142,6 +142,7 @@ rvMonsterGrunt::CheckActions
 bool rvMonsterGrunt::CheckActions ( void ) {
 	// If our health is below the rage threshold then enrage
 	if ( health < rageThreshold ) { 
+		PerformAction ( "Torso_Enrage", 4, true );
 		PerformAction ( "Torso_Enrage", 4, true );
 		return true;
 	}
